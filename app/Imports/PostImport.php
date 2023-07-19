@@ -18,7 +18,7 @@ class PostImport implements ToArray, WithHeadingRow
         Post::create([
            'job_title' => $language,
             'city' => $city,
-            //'status' =>
+            'status' =>1,
         ]);
     }
 }
