@@ -56,7 +56,13 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{route('admin.posts.create')}}" class="btn btn-primary">Create</a>
+                    <a href="{{route('admin.posts.create')}}" class="btn btn-primary">
+                        Create
+                    </a>
+                    <label for="csv" class="btn btn-primary mb-0 ml-3">
+                        Import CSV
+                    </label>
+                    <input type="file" name="csv" id="csv" class="d-none" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" >
                 </div>
                 <div class="card-body">
                     <table class="table table-striped table-centered mb-0" id="table-data">
@@ -99,15 +105,34 @@
                 dataType: 'json',
                 data: {param1: 'value1'},
             })
-            .done(function () {
-                console.log('success');
-            })
-            .success(function (response) {
-                //$('#table-data').
-            })
-            .error(function(response) {
 
+            $('#csv').change(function (event) {
+                let formData = new FormData();
+                formData.append('file', $(this)[0].files[0]);
+                $.ajax({
+                    url: '{{route('admin.posts.import_csv')}}',
+                    type: 'POST',
+                    dataType: 'json',
+                    enctype: 'multipart/form-data',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    cache: false,
+                    success: function (response) {
+                        $.toast({
+                            heading: 'Import Success',
+                            text: 'Your data have been imported.',
+                            showHideTransition: 'slide',
+                            position: 'top-center',
+                            icon: 'success',
+                        })
+                    },
+                    error: (function(response) {
+
+                    }),
+                })
             })
-        })
+        });
     </script>
 @endpush
