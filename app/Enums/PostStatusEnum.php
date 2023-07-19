@@ -1,17 +1,12 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace App\Enums;
 
 use BenSampo\Enum\Enum;
 
-/**
- * @method static static OptionOne()
- * @method static static OptionTwo()
- * @method static static OptionThree()
- */
 final class PostStatusEnum extends Enum
 {
-    const OptionOne = 0;
-    const OptionTwo = 1;
-    const OptionThree = 2;
+    const PENDING = 0;
+    const ADMIN_PENDING = 1;
+    const ADMIN_APPROVED = 2;
 }

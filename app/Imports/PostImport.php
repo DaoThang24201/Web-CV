@@ -2,6 +2,11 @@
 
 namespace App\Imports;
 
+use App\Enums\FiletypeEnum;
+use App\Enums\PostStatusEnum;
+use App\Models\Company;
+use App\Models\File;
+use App\Models\Language;
 use App\Models\Post;
 use Maatwebsite\Excel\Concerns\ToArray;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -10,15 +15,49 @@ class PostImport implements ToArray, WithHeadingRow
 {
     public function array(array $array)
     {
-        $companyName = $array['cong_ty'];
-        $language = $array['ngon_ngu'];
-        $city = $array['dia_diem'];
-        $link = $array['link'];
+        try {
+            foreach ($array as $each) {
+                $companyName = $each['cong_ty'];
+                $language = $each['ngon_ngu'];
+                $city = $each['dia_diem'];
+                $link = $each['link'];
 
-        Post::create([
-           'job_title' => $language,
-            'city' => $city,
-            'status' =>1,
-        ]);
+                if (!empty($companyName)) {
+                    $companyId = Company::firstOrCreate([
+                        'name' => $companyName,
+                    ], [
+                        'city' => $city,
+                        'country' => 'VietNam',
+                    ])->id;
+                } else {
+                    $companyId = null;
+                }
+
+                $post = Post::create([
+                    'job_title' => $language,
+                    'company_id' => $companyId,
+                    'city' => $city,
+                    'status' => PostStatusEnum::ADMIN_APPROVED,
+                    //'status' =>1,
+                ]);
+
+                $languages = explode(',', $language);
+                foreach ($languages as $language) {
+                    Language::firstOrCreate([
+                        'name' => trim($language),
+                    ]);
+                }
+
+                File::create([
+                    'post_id' => $post->id,
+                    'link' => $link,
+                    'type' => FiletypeEnum::JD,
+                ]);
+            }
+        } catch (\Throwable $exception) {
+            dd($each);
+        };
+
+
     }
 }

@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('posts', function (Blueprint $table) {
-            //
-        });
+
+        if (Schema::hasColumn('posts', 'company_id')) {
+            Schema::table('posts', function (Blueprint $table) {
+                $table->unsignedBigInteger('company_id')->nullable()->change();
+            });
+        }
     }
 
     /**
@@ -21,8 +24,5 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('posts', function (Blueprint $table) {
-            //
-        });
     }
 };
