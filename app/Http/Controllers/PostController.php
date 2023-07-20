@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\PostImport;
 use App\Models\Post;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\View;
@@ -18,12 +19,18 @@ class PostController extends Controller
         $this->model = Post::query();
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
-        return $this->model->paginate();
-    }
+        $data = $this->model->paginate();
+        foreach ($data as $each) {
+            $each->append('currency_salary_code');
+            $each->append('status_name');
+        }
 
-    public function import_csv(Request $request) {
-        Excel::import(new PostImport, $request->file('file'));
+        return response()->json([
+            'success' => true,
+            'data' => $data->getCollection(),
+            'pagination' => $data->linkCollection(),
+        ]);
     }
 }

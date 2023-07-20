@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Imports\PostImport;
 use App\Models\Post;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\View;
@@ -26,8 +27,7 @@ class PostController extends Controller
     public function index()
     {
 
-
-        return view('admin.posts.index');
+        return view("admin.posts.index");
     }
 
     public function create()

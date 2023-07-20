@@ -37,8 +37,7 @@ class PostImport implements ToArray, WithHeadingRow
                     'job_title' => $language,
                     'company_id' => $companyId,
                     'city' => $city,
-                    'status' => PostStatusEnum::ADMIN_APPROVED,
-                    //'status' =>1,
+                    'status' => PostStatusEnum::class,
                 ]);
 
                 $languages = explode(',', $language);

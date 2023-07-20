@@ -119,7 +119,7 @@
                         </tbody>
                     </table>
                     <nav>
-                        <ul class="pagination pagination-rounded mb-0 justify-content-center">
+                        <ul class="pagination pagination-rounded mt-3 mb-0 justify-content-center">
                             {{$data->links()}}
                         </ul>
                     </nav>

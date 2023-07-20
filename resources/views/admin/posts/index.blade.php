@@ -85,8 +85,8 @@
                         </tbody>
                     </table>
                     <nav>
-                        <ul class="pagination pagination-rounded mb-0 justify-content-center">
-                            {{--{{$data->links()}}--}}
+                        <ul class="pagination pagination-rounded mt-3 mb-0 justify-content-center" id="pagination">
+
                         </ul>
                     </nav>
 
@@ -100,10 +100,50 @@
 @push('js')
     <script>
         $(document).ready(function () {
+
             $.ajax({
-                url: '{{route('api.posts.index')}}',
+                url: '{{route('api.posts')}}',
                 dataType: 'json',
-                data: {param1: 'value1'},
+                data: {page: {{ request()->get('page') ?? 1 }} },
+                success: function (response) {
+                    response.data.forEach(function (each) {
+
+                        let location = (each.district && each.city) ? each.district + ' - ' + each.city : each.city
+                        let remotable = each.remotable ? 'x' : ''
+                        let is_partime = each.is_partime ? 'x' : ''
+                        let range_salary = (each.min_salary && each.max_salary) ? each.min_salary + ' - ' + each.max_salary : ''
+                        let range_date = (each.start_date && each.end_date) ? each.start_date + ' - ' + each.end_date : ''
+                        let is_pinned = each.is_pinned ? 'x' : ''
+                        let u = new Date(each.created_at)
+                        let created_at = convertTime(each.created_at)
+
+
+                        $('#table-data').append($('<tr>')
+                            .append($('<td>').append(each.id))
+                            .append($('<td>').append(each.job_title))
+                            .append($('<td>').append(location))
+                            .append($('<td>').append(remotable))
+                            .append($('<td>').append(is_partime))
+                            .append($('<td>').append(range_salary))
+                            .append($('<td>').append(range_date))
+                            .append($('<td>').append(each.status_name))
+                            .append($('<td>').append(is_pinned))
+                            .append($('<td>').append(created_at))
+                        )
+                    })
+                    renderPagination(response.pagination)
+                },
+                error: (function(response) {
+
+                }),
+            })
+
+            $(document).on('click', '#pagination li a', function (event) {
+                event.preventDefault();
+                let page = $(this).text();
+                let urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('page', page);
+                window.location.search = urlParams;
             })
 
             $('#csv').change(function (event) {
